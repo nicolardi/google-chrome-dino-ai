@@ -5,7 +5,6 @@ import AI from "./ai";
 const canvas = document.getElementById("board");
 const canvas_ctx = canvas.getContext('2d');
 
-
 const CELL_SIZE = 2;
 const ROWS = 300;
 let COLUMNS = 1000;
@@ -36,6 +35,7 @@ let harmless_characters_pool = null;
 let harmfull_characters_pool = null;
 
 let ai = new AI();
+let jump_timer = null;
 
 let harmless_character_allocator = [
     new CharacterAllocator(
@@ -256,7 +256,9 @@ function event_loop() {
             paint_layout(retry_layout, new Position((canvas.height / 2) - retry_layout.length, (canvas.width / 2) - retry_layout[0].length).get());
             paint_layout(dino_layout.dead, harmfull_characters_pool[0].get_position().get());
             game_over = Date.now();
-
+            clearTimeout(jump_timer);
+            jump_timer = null;
+            
             // AI HACK
             // Emit game_over event
             let gameOverEvent = new CustomEvent("game_over", {
@@ -330,20 +332,41 @@ function isPixelDark(r, g, b, alpha, threshold) {
 
   function run_probes(ctx)
   {
+   
+    let delay = 0;
+
     let r = 5;
-    let w = 80;
-    let h = 7;
+    let w = ai.px;
+    let h = ai.py;
     for(var i=0; i<w; i++) {
         for (var j=0; j<h; j++) {
-            let cx = 100 + i*r * 2;
+           
+
+            let cx = 300 + i*r * 2;
             let cy = 160 + j*r * 2;
 
-            if (detectDarkObject(ctx, cx, cy,r, r, 150)) {
+            let res = detectDarkObject(ctx, cx, cy,r, r, 150);
+
+            if (res) {
+
                drawRectangle(ctx, cx, cy, r, r, "red");
+               // sum weighted delay
+                delay += ai.current_citizen[i*ai.px + j];
             } else {
             drawRectangle(ctx, cx, cy, r,r, "black");
             }
         }
+
+      
+    }
+
+    if (!jump_timer && delay > 0) {
+        console.log("current citizen",ai.current_citizen);
+        console.log("delay",delay);
+        jump_timer = setTimeout(() => {
+            jump_timer = null;
+            ai.pressSpace();
+        }, delay);
     }
   }
 
