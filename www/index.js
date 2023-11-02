@@ -1,9 +1,10 @@
 import { AllocatorCharacterArray, Character, CharacterAllocator, CharacterMeta } from "./character";
 import { dino_layout, stone_layout, themes, cloud_layout, pit_layout, bird_layout, cactus_layout, retry_layout, star_layout } from "./layouts";
 import { applyVelocityToPosition, isCollided, Position, Velocity } from "./physics";
-
+import AI from "./ai";
 const canvas = document.getElementById("board");
 const canvas_ctx = canvas.getContext('2d');
+
 
 const CELL_SIZE = 2;
 const ROWS = 300;
@@ -33,6 +34,8 @@ let current_theme = null;
 
 let harmless_characters_pool = null;
 let harmfull_characters_pool = null;
+
+let ai = new AI();
 
 let harmless_character_allocator = [
     new CharacterAllocator(
@@ -254,6 +257,10 @@ function event_loop() {
             paint_layout(dino_layout.dead, harmfull_characters_pool[0].get_position().get());
             game_over = Date.now();
 
+            // AI HACK
+            // Emit game_over event
+            let gameOverEvent = new Event("game_over");
+            window.dispatchEvent(gameOverEvent);
 
             if (localStorage.getItem("project.github.chrome_dino.high_score") < game_score) {
                 localStorage.setItem("project.github.chrome_dino.high_score", game_score);
@@ -277,6 +284,11 @@ function event_loop() {
 }
 
 function main() {
+    // AI HACK
+    // Emit game_start event
+    let gameStartEvent = new Event("game_start");
+    window.dispatchEvent(gameStartEvent);
+
     initialize();
     event_loop();
 }
