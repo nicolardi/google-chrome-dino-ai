@@ -7,8 +7,9 @@ export default class ai {
            console.log('Game started!'); 
         });
 
-        window.addEventListener('game_over', () => {
-            console.log('Game over!'); 
+        window.addEventListener('game_over', (e) => {
+            let score = e.detail.score;
+            console.log('Game over!', score); 
          });
 
          console.log("listeners installed");

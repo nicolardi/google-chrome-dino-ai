@@ -259,7 +259,11 @@ function event_loop() {
 
             // AI HACK
             // Emit game_over event
-            let gameOverEvent = new Event("game_over");
+            let gameOverEvent = new CustomEvent("game_over", {
+                detail: {
+                    score: game_score
+                    }
+            });
             window.dispatchEvent(gameOverEvent);
 
             if (localStorage.getItem("project.github.chrome_dino.high_score") < game_score) {
