@@ -283,7 +283,7 @@ function event_loop() {
     }
 
     dino_current_trust.sub(ENVIRONMENT_GRAVITY);
-
+    run_probes(canvas_ctx);
     requestAnimationFrame(event_loop);
 }
 
@@ -300,3 +300,57 @@ function main() {
 document.fonts.load('1rem "Arcade"').then(() => {
     main();
 });
+// Function to check if a pixel is "dark"
+function isPixelDark(r, g, b, alpha, threshold) {
+    // A pixel is considered "dark" if the average of the R, G, and B values is below a threshold and alpha is not transparent
+    return ((r + g + b) / 3 < threshold) && (alpha > 0);
+  }
+  
+  // Function to detect a dark object within a rectangle
+  function detectDarkObject(ctx, startX, startY, width, height, darknessThreshold) {
+    // Get the image data for the rectangle
+    let imageData = ctx.getImageData(startX, startY, width, height);
+    let data = imageData.data;
+  
+    // Iterate over each pixel in the image data
+    for (let i = 0; i < data.length; i += 4) {
+      let r = data[i];
+      let g = data[i + 1];
+      let b = data[i + 2];
+      let alpha = data[i + 3];
+  
+      // Use the isPixelDark function to check the pixel's color
+      if (isPixelDark(r, g, b, alpha, darknessThreshold)) {
+        return true; // Dark object detected
+      }
+    }
+  
+    return false; // No dark object detected
+  }
+
+  function run_probes(ctx)
+  {
+    let r = 5;
+    let w = 80;
+    let h = 7;
+    for(var i=0; i<w; i++) {
+        for (var j=0; j<h; j++) {
+            let cx = 100 + i*r * 2;
+            let cy = 160 + j*r * 2;
+
+            if (detectDarkObject(ctx, cx, cy,r, r, 150)) {
+               drawRectangle(ctx, cx, cy, r, r, "red");
+            } else {
+            drawRectangle(ctx, cx, cy, r,r, "black");
+            }
+        }
+    }
+  }
+
+  function drawRectangle(ctx, x, y, width, height, color) {
+    ctx.beginPath();
+    ctx.lineWidth = 1;
+    ctx.rect(x, y, width, height);
+    ctx.strokeStyle = color;
+    ctx.stroke();
+  }
