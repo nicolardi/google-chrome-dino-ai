@@ -350,14 +350,14 @@ function isPixelDark(r, g, b, alpha, threshold) {
             let cy = 170 + j*r * 2.5;
 
             let res = detectDarkObject(ctx, cx, cy,r, r, 150);
-
+            let fillcolor = ai.current_citizen[i*w+j]*4; 
             if (res) {
-
-               drawRectangle(ctx, cx, cy, r, r, "red");
+            
+               drawRectangle(ctx, cx, cy, r, r, "red", "rgb(0,"+ fillcolor +",0)");
                // sum weighted delay
                 delay += ai.current_citizen[i*ai.px + j];
             } else {
-            drawRectangle(ctx, cx, cy, r,r, "black");
+            drawRectangle(ctx, cx, cy, r,r, "gray", "rgb(0,"+ fillcolor +",0)");
             }
         }
 
@@ -374,10 +374,13 @@ function isPixelDark(r, g, b, alpha, threshold) {
     }
   }
 
-  function drawRectangle(ctx, x, y, width, height, color) {
+  function drawRectangle(ctx, x, y, width, height, color, fillcolor) {
     ctx.beginPath();
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 2;
     ctx.rect(x, y, width, height);
     ctx.strokeStyle = color;
+    ctx.fillStyle = fillcolor;
+    ctx.fill();
     ctx.stroke();
+    
   }

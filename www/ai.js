@@ -2,7 +2,7 @@ export default class ai {
    
 
     constructor() {
-        this.population_size = 100;
+        this.population_size = 10;
         this.number_of_generations = 100;
         this.px = 8;
         this.py = 3;
@@ -77,10 +77,31 @@ export default class ai {
         // create a new population with the first 50 and the rest 50 a slightly mutated version of each
         for (let citizen of first) {
             new_population.push(citizen);
-            new_population.push(this.mutate(citizen));
+            // select a random citizen from the first array but different than the the one contained in citizen variable
+            let random_citizen = first[parseInt(Math.random()*first.length)];
+            while (random_citizen == citizen) {
+                random_citizen = first[parseInt(Math.random()*first.length)];
+            }
+            let new_citizen = this.crossover(citizen, random_citizen);
+            let mutated_citizen = this.mutate(new_citizen);
+            new_population.push(this.mutate(mutated_citizen));
         }
         this.population = new_population;
         this.fitness = [];
+    }
+
+    crossover(citizen1, citizen2) {
+        let new_citizen = [];
+        // Create a split point between 0 and citizen1.length
+        let split_point = parseInt(Math.random()*citizen1.length);
+        for (let i = 0; i < citizen1.length; i++) {
+            if (i>split_point) {
+                new_citizen.push(citizen1[i]);
+            } else {
+                new_citizen.push(citizen2[i]);
+            }
+        }
+        return new_citizen;
     }
 
     mutate(citizen) {
