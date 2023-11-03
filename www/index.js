@@ -258,7 +258,7 @@ function event_loop() {
             game_over = Date.now();
             clearTimeout(jump_timer);
             jump_timer = null;
-            
+
             // AI HACK
             // Emit game_over event
             let gameOverEvent = new CustomEvent("game_over", {
@@ -361,8 +361,8 @@ function isPixelDark(r, g, b, alpha, threshold) {
     }
 
     if (!jump_timer && delay > 0) {
-        console.log("current citizen",ai.current_citizen);
-        console.log("delay",delay);
+       // console.log("current citizen",ai.current_citizen);
+       // console.log("delay",delay);
         jump_timer = setTimeout(() => {
             jump_timer = null;
             ai.pressSpace();
