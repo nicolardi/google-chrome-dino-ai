@@ -305,7 +305,11 @@ document.fonts.load('1rem "Arcade"').then(() => {
 // Function to check if a pixel is "dark"
 function isPixelDark(r, g, b, alpha, threshold) {
     // A pixel is considered "dark" if the average of the R, G, and B values is below a threshold and alpha is not transparent
-    return ((r + g + b) / 3 < threshold) && (alpha > 0);
+    let test = ((r + g + b) / 3 < threshold) && (alpha > 0);
+    if (current_theme==themes.dark) {
+        test = !test;
+    }
+    return test;
   }
   
   // Function to detect a dark object within a rectangle
