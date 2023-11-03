@@ -2,7 +2,7 @@ export default class ai {
    
 
     constructor() {
-        this.population_size = 10;
+        this.population_size = 100;
         this.number_of_generations = 100;
         this.px = 8;
         this.py = 3;
