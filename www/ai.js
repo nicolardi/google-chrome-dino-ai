@@ -4,13 +4,13 @@ export default class ai {
     constructor() {
         this.population_size = 100;
         this.number_of_generations = 100;
-        this.px = 2;
-        this.py = 7;
+        this.px = 8;
+        this.py = 3;
         this.nparams = this.px * this.py;
     
         this.population = this.generate_initial_population(this.population_size, this.nparams);
         this.population_index = 0;
-        this.curremt_generation = 0;
+        this.current_generation = 0;
         this.playing;
 
         setTimeout(async () => {
@@ -22,14 +22,15 @@ export default class ai {
     
 
         window.addEventListener('game_start', () => {
-           console.log('Game started!'); 
+           //console.log('Game started!'); 
         });
 
         window.addEventListener('game_over', (e) => {
             let score = e.detail.score;
-            console.log('Game over!', score); 
+            //console.log('Game over!', score); 
             this.fitness.push(score);
-            console.log("fitness",this.fitness);
+            console.info("partita n." + this.population_index+"/"+this.population_size+" score: "+score);
+            //console.log("fitness",this.fitness);
             setTimeout(() => {
             this.playing = false;
             },1000);
@@ -38,11 +39,12 @@ export default class ai {
     }
 
     async play_generation() {
-        console.log(this.population);
+        console.log("Generazione: "+this.current_generation);
         this.population_index = 0;
         this.playing = false;
         this.fitness = [];
         for (let citizen of this.population) {
+           
             await this.play_citizen(citizen);
             this.population_index++;
             if (this.population_index >= this.population_size) {
@@ -50,7 +52,7 @@ export default class ai {
             }
         }
 
-        console.log("generation done",this.curremt_generation);
+        // console.log("generation done",this.current_generation);
         this.current_generation++;
         if (this.current_generation == this.number_of_generations) {
             console.log("Done");
@@ -60,13 +62,15 @@ export default class ai {
 
 
         
-        console.log("citizens", this.population, this.fitness);
+        //console.log("citizens", this.population, this.fitness);
         let new_population = [];
         let sorted_population_by_fitness = this.population.slice().sort((a,b) => {
             return -1*(this.fitness[this.population.indexOf(a)] - this.fitness[this.population.indexOf(b)]);
         });
 
-        console.log("sorted_citizens", this.sorted);
+        //console.log("sorted_citizens", this.sorted);
+        // keep the first 50
+        console.log("And the winner is: ", sorted_population_by_fitness[0],"best score: ", this.fitness.sort( (a,b) => {return b-a})[0]);
 
 
         let first = sorted_population_by_fitness.slice(0,this.population_size/2);
@@ -80,14 +84,17 @@ export default class ai {
     }
 
     mutate(citizen) {
-        let mapped_citizen = citizen.map((x) => {
-            return x + parseInt(Math.random()*50) - 25;
-        });
-        return mapped_citizen;
+        // get one of the params and mutate it
+        let param_index = parseInt(Math.random()*this.nparams);
+        let param = citizen[param_index];
+        let new_param = param + parseInt(Math.random()*50) - 25;
+        citizen[param_index] = new_param;
+        
+        return citizen;
     }
 
     play_citizen(citizen) {
-            console.log("Play citizen");
+            //console.log("Play citizen");
             this.playing = true;
             this.current_citizen = citizen;
             this.pressSpace();
@@ -107,7 +114,7 @@ export default class ai {
         for (let i = 0; i < population_size; i++) {
             let params = [];
             for (let j = 0; j < nparams; j++) {
-                params.push(parseInt(Math.random()*300));
+                params.push(parseInt(Math.random()*50));
             }
             population.push(params);
         }

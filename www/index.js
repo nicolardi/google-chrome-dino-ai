@@ -335,15 +335,15 @@ function isPixelDark(r, g, b, alpha, threshold) {
    
     let delay = 0;
 
-    let r = 5;
+    let r = 8;
     let w = ai.px;
     let h = ai.py;
     for(var i=0; i<w; i++) {
         for (var j=0; j<h; j++) {
            
 
-            let cx = 300 + i*r * 2;
-            let cy = 160 + j*r * 2;
+            let cx = 110 + i*r * 4;
+            let cy = 170 + j*r * 2.5;
 
             let res = detectDarkObject(ctx, cx, cy,r, r, 150);
 
